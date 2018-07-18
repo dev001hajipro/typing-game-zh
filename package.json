@@ -1,0 +1,20 @@
+{
+  "name": "typing-game-zh",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dev001hajipro/typing-game-zh.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dev001hajipro/typing-game-zh/issues"
+  },
+  "homepage": "https://github.com/dev001hajipro/typing-game-zh#readme"
+}
