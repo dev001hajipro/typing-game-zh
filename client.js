@@ -1,108 +1,100 @@
-document.getElementById("hanziButton").addEventListener('click', (event) => {
-    event.preventDefault();
-    var hanziText = document.getElementById('hanziText').value;
+// 音声再生サポートしている場合true
+const isSpeechSupport = () => Boolean(window.SpeechSynthesisUtterance)
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/hanzi/' + hanziText, true);
-    xhr.responseType = 'json';
-    xhr.onreadystatechange = function (event2) {
-        if (xhr.readyState == xhr.DONE) {
-            console.log(this.response);
-            document.getElementById('out').innerHTML = JSON.stringify(this.response);
-        }
-    };
-    xhr.send();
-});
-
-function makeOptions(lang) {
-    var voices = speechSynthesis.getVoices();
-    console.log(voices);
-    var sl = document.createElement('select');
-    sl.id = 'voiceSelect';
-    for (i = 0; i < voices.length; i++) {
-        if (lang == voices[i].lang) {
-            var opEl = document.createElement('option');
-            opEl.text = voices[i].name;
-            opEl.value = voices[i].name;
-            sl.appendChild(opEl);
-            console.log(voices[i]);
-        }
+// 音声再生サポート時は、男性音声、女性音声など複数あるのでそれを選べるように
+// select optionタグを作成する
+const makeSpeakerListOptions = (lang) => {
+  const voices = window.speechSynthesis.getVoices()
+  let sl = document.createElement('select')
+  sl.id = 'voiceSelect'
+  for (let i = 0; i < voices.length; i++) {
+    if (lang === voices[i].lang) {
+      let opEl = document.createElement('option')
+      opEl.text = voices[i].name
+      opEl.value = voices[i].name
+      sl.appendChild(opEl)
     }
-    document.getElementById('opt').appendChild(sl);
-}
-speechSynthesis.onvoiceschanged = () => {
-    makeOptions('zh-CN');
-};
-
-if (!SpeechSynthesisUtterance) {
-    document.getElementById('message').innerHTML = "Not Support Speech.";
-} else {
-    var textEl = document.getElementById('text');
-    var btn = document.getElementById('speech');
-    const speechHandler = (event) => {
-        event.preventDefault();
-        var utterance = new SpeechSynthesisUtterance(textEl.value);
-        console.log(voiceSelect.value);
-        if (voiceSelect.value) {
-            utterance.voice = speechSynthesis.getVoices().filter(function (voice) { return voice.name == voiceSelect.value; })[0];
-
-        } utterance.lang = 'zh-CN';
-        speechSynthesis.speak(utterance);
-    };
-    textEl.addEventListener('compositionend', speechHandler);
-    textEl.addEventListener('change', speechHandler);
-    btn.addEventListener('click', speechHandler);
+  }
+  document.getElementById('opt').appendChild(sl)
 }
 
+// 音声再生
+const speechHandler = (event) => {
+  event.preventDefault()
+  const voiceSelectValue = document.getElementById('voiceSelect').value
+  const elTextValue = document.getElementById('text').value
+  const utterance = new window.SpeechSynthesisUtterance(elTextValue)
+  if (voiceSelectValue) {
+    utterance.voice = window.speechSynthesis.getVoices().filter((voice) => voice.name === voiceSelectValue)[0]
+    utterance.lang = 'zh-CN'
+    window.speechSynthesis.speak(utterance)
+  }
+}
 
+const main = () => {
+  if (isSpeechSupport()) {
+    window.speechSynthesis.onvoiceschanged = () => makeSpeakerListOptions('zh-CN')
+    const elText = document.getElementById('text')
+    elText.addEventListener('compositionend', speechHandler)
+    elText.addEventListener('change', speechHandler)
+    document.getElementById('speech').addEventListener('click', speechHandler)
+  } else {
+    console.log('not support speech')
+  }
+}
+main()
 
-//////////////////////////////////////////
 // typing game
-var score = 0;
+var score = 0
 var data = [
-    'Orange',
-    'Hello',
-    'Apple',
-    'banana'
-];
+  'Orange',
+  'Hello',
+  'Apple',
+  'banana'
+]
 
 const createText = (ls) => {
-    const textEl = document.getElementById('text');
-    textEl.textContent = '';
-    return ls[Math.floor(Math.random() * ls.length)].split('').map(s => {
-        var span = document.createElement('span');
-        span.textContent = s;
-        textEl.appendChild(span);
-        return span;
-    });
+  const textEl = document.getElementById('word')
+  textEl.textContent = ''
+  return ls[Math.floor(Math.random() * ls.length)].split('').map(s => {
+    var span = document.createElement('span')
+    span.textContent = s
+    textEl.appendChild(span)
+    return span
+  })
 }
-const handleKeydown = (e) => {
-    if (currentWord[0].textContent === e.key) {
-        currentWord[0].style.color = '#f00';
-        currentWord.shift();
 
-        score++;
-        document.getElementById('scoreText').textContent = score;
+const handleKeydown = (event) => {
+  event.preventDefault()
+  console.log(currentWord)
+  if (currentWord[0].textContent === event.key) {
+    currentWord[0].style.color = '#f00'
+    currentWord.shift()
 
-        if (currentWord.length === 0)
-            currentWord = createText(data);
+    score++
+    document.getElementById('scoreText').textContent = score
+
+    if (currentWord.length === 0) {
+      currentWord = createText(data)
     }
-};
+  }
+}
 
-var currentWord, intervalID;
+var currentWord
+var intervalID
 const runTimer = () => {
-    var timer = 60;
-    return setInterval(() => {
-        timer--;
-        document.getElementById('timerText').textContent = timer;
-        if (timer === 0) {
-            clearInterval(intervalID)
-        }
-    }, 1000);
+  var timer = 60
+  return setInterval(() => {
+    timer--
+    document.getElementById('timerText').textContent = timer
+    if (timer === 0) {
+      clearInterval(intervalID)
+    }
+  }, 1000)
 }
 
 window.onload = (e) => {
-    window.onkeydown = handleKeydown;
-    intervalID = runTimer();
-    currentWord = createText(data);
-};
+  window.onkeydown = handleKeydown
+  intervalID = runTimer()
+  currentWord = createText(data)
+}

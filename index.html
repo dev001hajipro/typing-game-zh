@@ -1,33 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="client.css">
-    <script src="client.js"></script>
-    <title>Document</title>
-</head>
-<body>
-        <div>
-                <img class="img64" src="/static/chinadress_girl.png">
-            </div>
-            <div id="message"></div>
-            <p>中国語(簡体字)を入力すると、拼音(ピンイン)と日本語訳を表示します。</p>
-            
-            <input type="text" id="hanziText" placeholder="汉字">
-            <button id="hanziButton">汉字转日文</button>
-            <div id="out"></div>
-            <hr>
-            <p>中国語(簡体字)を入力すると、音声が流れます。</p>
-            <div id="opt"></div>
-            <div>
-                <input id="text" type="text" value="你好！我是日本人">
-                <input id="speech" type="button" value="语音(yuyin)">
-            </div>
 
-    <p>残り時間:<span id="timerText">0</span></p>
-    <p>スコア:<span id="scoreText">0</span></p>
-    <p id="text" class="text"></p>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" type="text/css" href="client.css">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="message"></div>
+  <p>中国語(簡体字)を入力すると、音声が流れます。</p>
+  <div id="opt"></div>
+  <div>
+    <input id="text" type="text" value="你好！我是日本人">
+    <input id="speech" type="button" value="语音(yuyin)">
+  </div>
+  <p>残り時間:
+    <span id="timerText">0</span>
+  </p>
+  <p>スコア:
+    <span id="scoreText">0</span>
+  </p>
+  <p id="word" class="text"></p>
+  <script src="client.js"></script>
 </body>
+
 </html>

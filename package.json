@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/dev001hajipro/typing-game-zh/issues"
   },
-  "homepage": "https://github.com/dev001hajipro/typing-game-zh#readme"
+  "homepage": "https://github.com/dev001hajipro/typing-game-zh#readme",
+  "dependencies": {
+    "standard": "^11.0.1"
+  }
 }
