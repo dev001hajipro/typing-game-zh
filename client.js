@@ -20,7 +20,7 @@ const makeSpeakerListOptions = (lang) => {
 
 // 音声再生
 const speechHandler = (event) => {
-  event.preventDefault()
+  // event.preventDefault()
   const voiceSelectValue = document.getElementById('voiceSelect').value
   const elTextValue = document.getElementById('text').value
   const utterance = new window.SpeechSynthesisUtterance(elTextValue)
@@ -37,7 +37,6 @@ const main = () => {
     const elText = document.getElementById('text')
     elText.addEventListener('compositionend', speechHandler)
     elText.addEventListener('change', speechHandler)
-    document.getElementById('speech').addEventListener('click', speechHandler)
   } else {
     console.log('not support speech')
   }
@@ -45,18 +44,20 @@ const main = () => {
 main()
 
 // typing game
-var score = 0
-var data = [
-  'Orange',
-  'Hello',
-  'Apple',
-  'banana'
-]
+let state = {
+  'words': [],
+  'word': '',
+  'score': 0
+}
+
+const selectWord = (words) => words[Math.floor(Math.random() * words.length)]
 
 const createText = (ls) => {
   const textEl = document.getElementById('word')
   textEl.textContent = ''
-  return ls[Math.floor(Math.random() * ls.length)].split('').map(s => {
+  const w = selectWord(state.words)
+
+  return w.pinyin.split('').map(s => {
     var span = document.createElement('span')
     span.textContent = s
     textEl.appendChild(span)
@@ -65,36 +66,50 @@ const createText = (ls) => {
 }
 
 const handleKeydown = (event) => {
-  event.preventDefault()
-  console.log(currentWord)
-  if (currentWord[0].textContent === event.key) {
-    currentWord[0].style.color = '#f00'
-    currentWord.shift()
+  // event.preventDefault()
+  console.log(state.word)
+  if (state.word[0].textContent === event.key) {
+    state.word[0].style.color = '#f00'
+    state.word.shift()
 
-    score++
-    document.getElementById('scoreText').textContent = score
+    state.score++
+    document.getElementById('scoreText').textContent = state.score
 
-    if (currentWord.length === 0) {
-      currentWord = createText(data)
+    if (state.word.length === 0) {
+      state.word = createText(state.words)
     }
   }
 }
 
-var currentWord
-var intervalID
-const runTimer = () => {
-  var timer = 60
-  return setInterval(() => {
-    timer--
-    document.getElementById('timerText').textContent = timer
-    if (timer === 0) {
-      clearInterval(intervalID)
-    }
-  }, 1000)
+class Timer {
+  constructor (cb, finish, timer = 5) {
+    this.timer = timer
+    this.finish = finish
+    this.cb = cb
+  }
+  run () {
+    this.intervalID = setInterval(() => {
+      this.timer--
+      this.cb && this.cb(this.timer)
+      if (this.timer === 0) {
+        this.finish && this.finish(this.timer)
+        clearInterval(this.intervalID)
+      }
+    }, 1000)
+  }
 }
 
 window.onload = (e) => {
   window.onkeydown = handleKeydown
-  intervalID = runTimer()
-  currentWord = createText(data)
+  window.fetch('./resource/HSK Official With Definitions 2012 L1 freqorder.json')
+    .then((response) => {
+      return response.json()
+    })
+    .then((json) => {
+      state.words = json
+      state.word = createText(state.words)
+    })
+
+  let countdownTimer = new Timer((timer) => { document.getElementById('timerText').textContent = timer }, () => {}, 60)
+  countdownTimer.run()
 }
