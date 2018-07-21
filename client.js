@@ -19,10 +19,9 @@ const makeSpeakerListOptions = (lang) => {
 }
 
 // 音声再生
-const speechHandler = (event) => {
-  // event.preventDefault()
+const speech = () => {
   const voiceSelectValue = document.getElementById('voiceSelect').value
-  const elTextValue = document.getElementById('text').value
+  const elTextValue = document.getElementById('simplified').textContent
   const utterance = new window.SpeechSynthesisUtterance(elTextValue)
   if (voiceSelectValue) {
     utterance.voice = window.speechSynthesis.getVoices().filter((voice) => voice.name === voiceSelectValue)[0]
@@ -34,9 +33,6 @@ const speechHandler = (event) => {
 const main = () => {
   if (isSpeechSupport()) {
     window.speechSynthesis.onvoiceschanged = () => makeSpeakerListOptions('zh-CN')
-    const elText = document.getElementById('text')
-    elText.addEventListener('compositionend', speechHandler)
-    elText.addEventListener('change', speechHandler)
   } else {
     console.log('not support speech')
   }
@@ -50,33 +46,34 @@ let state = {
   'score': 0
 }
 
-const selectWord = (words) => words[Math.floor(Math.random() * words.length)]
+const selectWord = (words) => {
+  state.word = words[Math.floor(Math.random() * words.length)]
 
-const createText = (ls) => {
-  const textEl = document.getElementById('word')
-  textEl.textContent = ''
-  const w = selectWord(state.words)
+  state.word.pinyin_current = state.word.pinyin.replace(/\d+/g, '')
+  // update ui
+  document.getElementById('simplified').textContent = state.word.simplified
+  document.getElementById('traditional').textContent = state.word.traditional
+  document.getElementById('pinyin').textContent = state.word.pinyin
+  document.getElementById('pinyin_current').textContent = state.word.pinyin_current
+  document.getElementById('pinyin_tone').textContent = state.word.pinyin_tone
+  document.getElementById('definition').textContent = state.word.definition
 
-  return w.pinyin.split('').map(s => {
-    var span = document.createElement('span')
-    span.textContent = s
-    textEl.appendChild(span)
-    return span
-  })
+  speech()
 }
 
 const handleKeydown = (event) => {
   // event.preventDefault()
-  console.log(state.word)
-  if (state.word[0].textContent === event.key) {
-    state.word[0].style.color = '#f00'
-    state.word.shift()
+  if (state.word.pinyin_current[0] === event.key) {
+    state.word.pinyin_current = state.word.pinyin_current.slice(1)
+
+    // update ui
+    document.getElementById('pinyin_current').textContent = state.word.pinyin_current
 
     state.score++
     document.getElementById('scoreText').textContent = state.score
 
-    if (state.word.length === 0) {
-      state.word = createText(state.words)
+    if (state.word.pinyin_current.length === 0) {
+      selectWord(state.words)
     }
   }
 }
@@ -107,7 +104,7 @@ window.onload = (e) => {
     })
     .then((json) => {
       state.words = json
-      state.word = createText(state.words)
+      selectWord(state.words)
     })
 
   let countdownTimer = new Timer((timer) => { document.getElementById('timerText').textContent = timer }, () => {}, 60)
