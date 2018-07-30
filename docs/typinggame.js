@@ -1,3 +1,23 @@
+class UserStatus {
+  constructor () {
+    this.score = 0
+    window.localStorage.setItem('score', this.score)
+    this.hiscore = window.localStorage.getItem('hiscore') || 0
+  }
+
+  setScore (n) {
+    this.score = n
+    window.localStorage.setItem('score', this.score)
+
+    if (this.hiscore < this.score) {
+      this.hiscore = this.score
+      window.localStorage.setItem('hiscore', this.hiscore)
+    }
+  }
+}
+
+let userStatus = new UserStatus()
+
 class SceneTitle extends window.Phaser.Scene {
   constructor () {
     super('SceneTitle')
@@ -29,6 +49,7 @@ class SceneGame extends window.Phaser.Scene {
   constructor () {
     super('SceneGame')
     this.score = 0
+    userStatus.setScore(this.score)
     this.timer = 0
     this.word = ''
   }
@@ -73,6 +94,8 @@ class SceneGame extends window.Phaser.Scene {
       this.word.pinyin_current = this.word.pinyin_current.slice(1)
 
       this.score++
+
+      userStatus.setScore(this.score)
 
       if (this.word.pinyin_current.length === 0) {
         this.selectWord(this.words)
@@ -134,7 +157,7 @@ class SceneResult extends window.Phaser.Scene {
   }
 
   create () {
-    this.titleText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'result', { fontSize: '72px', padding: 10 })
+    this.titleText = this.add.text(this.sys.game.config.width / 2, 130, '結果', { fontSize: '72px', padding: 10 })
     this.titleText.setOrigin(0.5)
 
     this.add.image(this.sys.game.config.width / 2, 350, 'b_Restart')
@@ -144,6 +167,11 @@ class SceneResult extends window.Phaser.Scene {
       .setInteractive()
 
     this.input.on('gameobjectdown', this.onClick, this)
+
+    this.scoreText = this.add.text(this.sys.game.config.width / 2, 200, `score:${userStatus.score}`, { fontSize: '24px', padding: 10 })
+    this.scoreText.setOrigin(0.5)
+    this.hiscoreText = this.add.text(this.sys.game.config.width / 2, 230, `hiscore:${userStatus.hiscore}`, { fontSize: '24px', padding: 10 })
+    this.hiscoreText.setOrigin(0.5)
   }
 
   onClick (pointer, gameObject) {
