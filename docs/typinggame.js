@@ -117,13 +117,6 @@ class SceneGame extends window.Phaser.Scene {
   selectWord (words) {
     this.word = words[Math.floor(Math.random() * words.length)]
     this.word.pinyin_current = this.word.pinyin.replace(/\d+/g, '')
-    /*
-    document.getElementById('traditional').textContent = state.word.traditional
-    document.getElementById('pinyin').textContent = state.word.pinyin
-    document.getElementById('pinyin_current').textContent = state.word.pinyin_current
-    document.getElementById('pinyin_tone').textContent = state.word.pinyin_tone
-    document.getElementById('definition').textContent = state.word.definition
-    */
     this.speech()
   }
 
