@@ -89,8 +89,6 @@ class SceneGame extends window.Phaser.Scene {
     this.wordDefinitionText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2 + 190, ``, { fontSize: '24px', padding: 10 })
     this.wordDefinitionText.setOrigin(0.5)
 
-    
-
     this.add.image(this.sys.game.config.width - 40, 40, 'b_Parameters')
       .setInteractive()
 
