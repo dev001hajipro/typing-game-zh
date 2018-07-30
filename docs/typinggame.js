@@ -67,16 +67,29 @@ class SceneGame extends window.Phaser.Scene {
         this.words = json
         this.selectWord(this.words)
         console.log('1', this.word.simplified)
-        this.wordSimplifiedText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2, `${this.word.simplified}`, { fontSize: '72px', padding: 10 })
-        this.wordSimplifiedText.setOrigin(0.5)
-        this.wordPinyinCurrentText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2 + 50, `${this.word.pinyin_current}`, { fontSize: '24px', padding: 10 })
-        this.wordPinyinCurrentText.setOrigin(0.5)
+        this.wordSimplifiedText.setText(`${this.word.simplified}`)
+        this.wordPinyinCurrentText.setText(`${this.word.pinyin_current}`)
+        //this.wordPinyinText.setText(`${this.word.pinyin}`)
+        this.wordPinyinToneText.setText(`${this.word.pinyin_tone}`)
+        this.wordDefinitionText.setText(`${this.word.definition}`)
       })
 
     this.scoreText = this.add.text(10, 5, `score:${this.score}`, { fontSize: '24px', padding: 10 })
     this.scoreText.setOrigin(0)
     this.timeText = this.add.text(10, 30, `timer:${this.timer}`, { fontSize: '24px', padding: 10 })
     this.timeText.setOrigin(0)
+    this.wordSimplifiedText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2, ``, { fontSize: '72px', padding: 10 })
+    this.wordSimplifiedText.setOrigin(0.5)
+    this.wordPinyinCurrentText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2 + 50, ``, { fontSize: '24px', padding: 10 })
+    this.wordPinyinCurrentText.setOrigin(0.5)
+    //this.wordPinyinText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2 + 150, ``, { fontSize: '24px', padding: 10 })
+    //this.wordPinyinText.setOrigin(0.5)
+    this.wordPinyinToneText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2 + 150, ``, { fontSize: '24px', padding: 10 })
+    this.wordPinyinToneText.setOrigin(0.5)
+    this.wordDefinitionText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2 + 190, ``, { fontSize: '24px', padding: 10 })
+    this.wordDefinitionText.setOrigin(0.5)
+
+    
 
     this.add.image(this.sys.game.config.width - 40, 40, 'b_Parameters')
       .setInteractive()
@@ -139,6 +152,9 @@ class SceneGame extends window.Phaser.Scene {
     this.timeText.setText(`timer:${this.timedEvent.repeatCount}`)
     this.wordSimplifiedText.setText(`${this.word.simplified}`)
     this.wordPinyinCurrentText.setText(`${this.word.pinyin_current}`)
+    //this.wordPinyinText.setText(`${this.word.pinyin}`)
+    this.wordPinyinToneText.setText(`ピンイン:${this.word.pinyin_tone}`)
+    this.wordDefinitionText.setText(`意味(英語)：${this.word.definition}`)
   }
 
   onClick (pointer, gameObject) {
