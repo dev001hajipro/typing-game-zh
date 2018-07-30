@@ -222,7 +222,6 @@ const makeSpeakerListOptions = (lang) => {
 }
 
 const main = () => {
-  console.log('run main')
   if (isSpeechSupport()) {
     window.speechSynthesis.onvoiceschanged = () => makeSpeakerListOptions('zh-CN')
   } else {
