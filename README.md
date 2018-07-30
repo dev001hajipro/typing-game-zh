@@ -1,5 +1,7 @@
 # typing-game-zh
 
+## demo
+https://dev001hajipro.github.io/typing-game-zh/
 
 # data
 http://www.hskhsk.com/word-lists.html
