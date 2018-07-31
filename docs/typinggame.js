@@ -48,6 +48,9 @@ class SceneTitle extends window.Phaser.Scene {
 class SceneGame extends window.Phaser.Scene {
   constructor () {
     super('SceneGame')
+  }
+
+  init() {
     this.score = 0
     userStatus.setScore(this.score)
     this.timer = 0
