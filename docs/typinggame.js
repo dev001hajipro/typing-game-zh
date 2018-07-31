@@ -52,6 +52,7 @@ class SceneGame extends window.Phaser.Scene {
     userStatus.setScore(this.score)
     this.timer = 0
     this.word = ''
+    this.lockKeydown = false
   }
 
   preload () {
@@ -66,7 +67,6 @@ class SceneGame extends window.Phaser.Scene {
       .then((json) => {
         this.words = json
         this.selectWord(this.words)
-        console.log('1', this.word.simplified)
         this.wordSimplifiedText.setText(`${this.word.simplified}`)
         this.wordPinyinCurrentText.setText(`${this.word.pinyin_current}`)
         //this.wordPinyinText.setText(`${this.word.pinyin}`)
@@ -101,7 +101,8 @@ class SceneGame extends window.Phaser.Scene {
 
   onKeydown (event) {
     event.preventDefault()
-    if (this.word.pinyin_current[0] === event.key) {
+    if (!this.lockKeydown && this.word.pinyin_current[0] === event.key) {
+      this.lockKeydown = true
       this.word.pinyin_current = this.word.pinyin_current.slice(1)
 
       this.score++
@@ -111,6 +112,7 @@ class SceneGame extends window.Phaser.Scene {
       if (this.word.pinyin_current.length === 0) {
         this.selectWord(this.words)
       }
+      this.lockKeydown = false
     }
   }
 
@@ -122,7 +124,6 @@ class SceneGame extends window.Phaser.Scene {
 
   // 音声再生
   speech () {
-    console.log(this.word.simplified)
     const voiceSelectValue = document.getElementById('voiceSelect').value
     const utterance = new window.SpeechSynthesisUtterance(this.word.simplified)
     if (voiceSelectValue) {
