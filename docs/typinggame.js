@@ -26,6 +26,8 @@ class SceneTitle extends window.Phaser.Scene {
   preload () {
     this.load.image('b_Play1', 'resource/image/Orange/scaled-at-50/b_Play1.png')
     this.load.image('b_Leaderboard', 'resource/image/Orange/scaled-at-50/b_Leaderboard.png')
+
+    this.load.audio('se_button', 'resource/audio/MenuSelectionClick.wav')
   }
 
   create () {
@@ -38,10 +40,13 @@ class SceneTitle extends window.Phaser.Scene {
       .setInteractive()
 
     this.input.on('gameobjectdown', this.onClick, this)
+
+    this.sound.add('se_button')
   }
 
   onClick (pointer, gameObject) {
     this.scene.start((gameObject.texture.key === 'b_Play1') ? 'SceneGame' : 'SceneResult')
+    this.sound.play('se_button')
   }
 }
 
@@ -55,10 +60,14 @@ class SceneGame extends window.Phaser.Scene {
     userStatus.setScore(this.score)
     this.timer = 0
     this.word = ''
+    this.lockKeydown = false
   }
 
   preload () {
     this.load.image('b_Parameters', 'resource/image/Orange/scaled-at-50/b_Parameters.png')
+    
+    this.load.audio('se_button', 'resource/audio/MenuSelectionClick.wav')
+
   }
 
   create () {
@@ -69,7 +78,6 @@ class SceneGame extends window.Phaser.Scene {
       .then((json) => {
         this.words = json
         this.selectWord(this.words)
-        console.log('1', this.word.simplified)
         this.wordSimplifiedText.setText(`${this.word.simplified}`)
         this.wordPinyinCurrentText.setText(`${this.word.pinyin_current}`)
         //this.wordPinyinText.setText(`${this.word.pinyin}`)
@@ -92,8 +100,6 @@ class SceneGame extends window.Phaser.Scene {
     this.wordDefinitionText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2 + 190, ``, { fontSize: '24px', padding: 10 })
     this.wordDefinitionText.setOrigin(0.5)
 
-    
-
     this.add.image(this.sys.game.config.width - 40, 40, 'b_Parameters')
       .setInteractive()
 
@@ -102,11 +108,14 @@ class SceneGame extends window.Phaser.Scene {
     this.timedEvent = this.time.addEvent({delay: 1000, callback: this.onTime, callbackScope: this, repeat: 60})
 
     this.input.keyboard.on('keydown', this.onKeydown, this)
+
+    this.sound.add('se_button')
   }
 
   onKeydown (event) {
     event.preventDefault()
-    if (this.word.pinyin_current[0] === event.key) {
+    if (!this.lockKeydown && this.word.pinyin_current[0] === event.key) {
+      this.lockKeydown = true
       this.word.pinyin_current = this.word.pinyin_current.slice(1)
 
       this.score++
@@ -116,25 +125,18 @@ class SceneGame extends window.Phaser.Scene {
       if (this.word.pinyin_current.length === 0) {
         this.selectWord(this.words)
       }
+      this.lockKeydown = false
     }
   }
 
   selectWord (words) {
     this.word = words[Math.floor(Math.random() * words.length)]
     this.word.pinyin_current = this.word.pinyin.replace(/\d+/g, '')
-    /*
-    document.getElementById('traditional').textContent = state.word.traditional
-    document.getElementById('pinyin').textContent = state.word.pinyin
-    document.getElementById('pinyin_current').textContent = state.word.pinyin_current
-    document.getElementById('pinyin_tone').textContent = state.word.pinyin_tone
-    document.getElementById('definition').textContent = state.word.definition
-    */
     this.speech()
   }
 
   // 音声再生
   speech () {
-    console.log(this.word.simplified)
     const voiceSelectValue = document.getElementById('voiceSelect').value
     const utterance = new window.SpeechSynthesisUtterance(this.word.simplified)
     if (voiceSelectValue) {
@@ -162,6 +164,7 @@ class SceneGame extends window.Phaser.Scene {
 
   onClick (pointer, gameObject) {
     this.scene.start('SceneTitle')
+    this.sound.play('se_button')
   }
 }
 
@@ -173,6 +176,9 @@ class SceneResult extends window.Phaser.Scene {
   preload () {
     this.load.image('b_Restart', 'resource/image/Orange/scaled-at-50/b_Restart.png')
     this.load.image('b_Parameters', 'resource/image/Orange/scaled-at-50/b_Parameters.png')
+    
+    this.load.audio('se_button', 'resource/audio/MenuSelectionClick.wav')
+
   }
 
   create () {
@@ -191,10 +197,13 @@ class SceneResult extends window.Phaser.Scene {
     this.scoreText.setOrigin(0.5)
     this.hiscoreText = this.add.text(this.sys.game.config.width / 2, 230, `hiscore:${userStatus.hiscore}`, { fontSize: '24px', padding: 10 })
     this.hiscoreText.setOrigin(0.5)
+
+    this.sound.add('se_button');
   }
 
   onClick (pointer, gameObject) {
     this.scene.start((gameObject.texture.key === 'b_Restart') ? 'SceneGame' : 'SceneTitle')
+    this.sound.play('se_button')
   }
 }
 
@@ -234,7 +243,6 @@ const makeSpeakerListOptions = (lang) => {
 }
 
 const main = () => {
-  console.log('run main')
   if (isSpeechSupport()) {
     window.speechSynthesis.onvoiceschanged = () => makeSpeakerListOptions('zh-CN')
   } else {
