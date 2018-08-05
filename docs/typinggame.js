@@ -26,6 +26,8 @@ class SceneTitle extends window.Phaser.Scene {
   preload () {
     this.load.image('b_Play1', 'resource/image/Orange/scaled-at-50/b_Play1.png')
     this.load.image('b_Leaderboard', 'resource/image/Orange/scaled-at-50/b_Leaderboard.png')
+
+    this.load.audio('se_button', 'resource/audio/MenuSelectionClick.wav')
   }
 
   create () {
@@ -38,10 +40,13 @@ class SceneTitle extends window.Phaser.Scene {
       .setInteractive()
 
     this.input.on('gameobjectdown', this.onClick, this)
+
+    this.sound.add('se_button')
   }
 
   onClick (pointer, gameObject) {
     this.scene.start((gameObject.texture.key === 'b_Play1') ? 'SceneGame' : 'SceneResult')
+    this.sound.play('se_button')
   }
 }
 
@@ -57,6 +62,9 @@ class SceneGame extends window.Phaser.Scene {
 
   preload () {
     this.load.image('b_Parameters', 'resource/image/Orange/scaled-at-50/b_Parameters.png')
+    
+    this.load.audio('se_button', 'resource/audio/MenuSelectionClick.wav')
+
   }
 
   create () {
@@ -97,6 +105,8 @@ class SceneGame extends window.Phaser.Scene {
     this.timedEvent = this.time.addEvent({delay: 1000, callback: this.onTime, callbackScope: this, repeat: 60})
 
     this.input.keyboard.on('keydown', this.onKeydown, this)
+
+    this.sound.add('se_button')
   }
 
   onKeydown (event) {
@@ -151,6 +161,7 @@ class SceneGame extends window.Phaser.Scene {
 
   onClick (pointer, gameObject) {
     this.scene.start('SceneTitle')
+    this.sound.play('se_button')
   }
 }
 
@@ -162,6 +173,9 @@ class SceneResult extends window.Phaser.Scene {
   preload () {
     this.load.image('b_Restart', 'resource/image/Orange/scaled-at-50/b_Restart.png')
     this.load.image('b_Parameters', 'resource/image/Orange/scaled-at-50/b_Parameters.png')
+    
+    this.load.audio('se_button', 'resource/audio/MenuSelectionClick.wav')
+
   }
 
   create () {
@@ -180,10 +194,13 @@ class SceneResult extends window.Phaser.Scene {
     this.scoreText.setOrigin(0.5)
     this.hiscoreText = this.add.text(this.sys.game.config.width / 2, 230, `hiscore:${userStatus.hiscore}`, { fontSize: '24px', padding: 10 })
     this.hiscoreText.setOrigin(0.5)
+
+    this.sound.add('se_button');
   }
 
   onClick (pointer, gameObject) {
     this.scene.start((gameObject.texture.key === 'b_Restart') ? 'SceneGame' : 'SceneTitle')
+    this.sound.play('se_button')
   }
 }
 
