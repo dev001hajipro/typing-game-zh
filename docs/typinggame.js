@@ -272,10 +272,13 @@ const isSpeechSupport = () => Boolean(window.SpeechSynthesisUtterance)
 
 // 音声再生サポート時は、男性音声、女性音声など複数あるのでそれを選べるように
 // select optionタグを作成する
-const makeSpeakerListOptions = (lang) => {
-    const voices = window.speechSynthesis.getVoices()
-    let sl = document.createElement('select')
-    sl.id = 'voiceSelect'
+let sl = document.querySelector('#voiceSelect');
+let voices;
+const makeSpeakerListOptions = () => {
+    console.log('makeSpeakerListOptions')
+    const lang = 'zh-CN';
+    voices = window.speechSynthesis.getVoices()
+    sl.textContent = null;
     for (let i = 0; i < voices.length; i++) {
         if (lang === voices[i].lang) {
             let opEl = document.createElement('option')
@@ -284,14 +287,19 @@ const makeSpeakerListOptions = (lang) => {
             sl.appendChild(opEl)
         }
     }
-    document.getElementById('opt').appendChild(sl)
-}
+};
 
 const main = () => {
     if (isSpeechSupport()) {
-        window.speechSynthesis.onvoiceschanged = () => makeSpeakerListOptions('zh-CN')
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            console.log('run main.')
+            voices = window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = makeSpeakerListOptions;
+        } else {
+            makeSpeakerListOptions();
+        }
     } else {
         console.log('not support speech')
     }
-}
+};
 main()
