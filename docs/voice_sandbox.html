@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>音声入力テストページ</title>
+</head>
+<body>
+    <h1>音声認識テストページ</h1>
+    <button id="startRecognition">読み取り開始</button>
+    <div id="stat">停止</div>
+    <script>
+
+// https://developer.mozilla.org/ja/docs/Web/API/SpeechRecognition
+const isSpeechRecognitionSupport = () => Boolean(window.webkitSpeechRecognition)
+
+if (isSpeechRecognitionSupport()) {
+    let recognition = new window.webkitSpeechRecognition();
+    recognition.lang = 'zh_CN';
+    console.log(recognition.lang);
+    recognition.continuous = false; // 認識した結果を連続して返す。
+    recognition.interimResults = false; // 暫定結果を返すか?
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = function(event) {
+        let value = event.results[0][0].transcript;
+        console.log(value);
+        document.getElementById('stat').textContent = 'stop';
+        recognition.stop();
+    };
+
+    document.getElementById('startRecognition').addEventListener('click', (event)=> {
+        console.log('clicked');
+        document.getElementById('stat').textContent = 'start';
+        recognition.start();
+    });
+    console.log('ready webkitSpeechRecognition');
+}
+    </script>
+</body>
+</html>
