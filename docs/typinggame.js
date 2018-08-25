@@ -76,11 +76,6 @@ class SceneSelectLevel extends window.Phaser.Scene {
             this.textLevels.push(textObject);
         }
 
-        //this.add.image(this.sys.game.config.width / 2 + 50, 350, 'b_Play1')
-        //  .setInteractive()
-        //this.add.image(this.sys.game.config.width / 2 - 50, 350, 'b_Leaderboard')
-        //  .setInteractive()
-
         this.input.on('gameobjectdown', this.onClick, this);
 
         this.sound.add('se_button');
@@ -176,7 +171,6 @@ class SceneGame extends window.Phaser.Scene {
 
     selectWord(words) {
         this.word = words[Math.floor(Math.random() * words.length)];
-        console.log('this.word.pinyin', this.word.pinyin);
         this.word.pinyin_current = this.word.pinyin.replace(/\d+/g, '');
         this.speech();
     }
@@ -276,7 +270,6 @@ const isSpeechSupport = () => Boolean(window.SpeechSynthesisUtterance);
 let sl = document.querySelector('#voiceSelect');
 let voices;
 const makeSpeakerListOptions = () => {
-    console.log('makeSpeakerListOptions');
     const lang = 'zh-CN';
     voices = window.speechSynthesis.getVoices();
     sl.textContent = null;
@@ -293,7 +286,6 @@ const makeSpeakerListOptions = () => {
 const main = () => {
     if (isSpeechSupport()) {
         if (window.speechSynthesis.onvoiceschanged !== undefined) {
-            console.log('run main.');
             voices = window.speechSynthesis.getVoices();
             window.speechSynthesis.onvoiceschanged = makeSpeakerListOptions;
         } else {
