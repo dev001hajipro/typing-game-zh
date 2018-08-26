@@ -83,7 +83,6 @@ class SceneSelectLevel extends window.Phaser.Scene {
 
     onClick(pointer, gameObject) {
         userStatus.level = Number(gameObject.name);
-        console.log(userStatus.level);
         this.scene.start('SceneGame');
         this.sound.play('se_button');
     }
@@ -98,7 +97,13 @@ class SceneGame extends window.Phaser.Scene {
         this.score = 0;
         userStatus.setScore(this.score);
         this.timer = 0;
-        this.word = '';
+        this.word = {
+            simplified: '',
+            pinyin_current: '',
+            pinyin: '',
+            pinyin_tone: '',
+            definition: ''
+        };
         this.lockKeydown = false;
     }
 
@@ -110,7 +115,7 @@ class SceneGame extends window.Phaser.Scene {
     }
 
     create() {
-        console.log(`./resource/HSK Official With Definitions 2012 L${userStatus.level} freqorder.json`);
+        this._initGameObjects();
         window.fetch(`./resource/HSK Official With Definitions 2012 L${userStatus.level} freqorder.json`)
             .then((response) => {
                 return response.json();
@@ -124,7 +129,9 @@ class SceneGame extends window.Phaser.Scene {
                 this.wordPinyinToneText.setText(`${this.word.pinyin_tone}`);
                 this.wordDefinitionText.setText(`${this.word.definition}`);
             });
+    }
 
+    _initGameObjects() {
         this.scoreText = this.add.text(10, 5, `score:${this.score}`, { fontSize: '24px', padding: 10 });
         this.scoreText.setOrigin(0);
         this.timeText = this.add.text(10, 30, `timer:${this.timer}`, { fontSize: '24px', padding: 10 });
@@ -216,9 +223,7 @@ class SceneResult extends window.Phaser.Scene {
     preload() {
         this.load.image('b_Restart', 'resource/image/Orange/scaled-at-50/b_Restart.png');
         this.load.image('b_Parameters', 'resource/image/Orange/scaled-at-50/b_Parameters.png');
-
         this.load.audio('se_button', 'resource/audio/MenuSelectionClick.wav');
-
     }
 
     create() {
