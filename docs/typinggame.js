@@ -111,8 +111,9 @@ class SceneGame extends window.Phaser.Scene {
         this.load.image('b_Parameters', 'resource/image/Orange/scaled-at-50/b_Parameters.png');
 
         this.load.audio('se_button', 'resource/audio/MenuSelectionClick.wav');
-
         this.load.audio('se_typing', 'resource/audio/9744__horn__typewriter.wav');
+        this.load.audio('se_bell', 'resource/audio/433596__mincedbeats__typewriter-bell.wav');
+        
 
     }
 
@@ -160,7 +161,7 @@ class SceneGame extends window.Phaser.Scene {
 
         this.sound.add('se_button');
         this.sound.add('se_typing');
-
+        this.sound.add('se_bell');
     }
 
     onKeydown(event) {
@@ -169,8 +170,6 @@ class SceneGame extends window.Phaser.Scene {
         } else {
             this.sound.play('se_typing');
         }
-        
-        console.log(event);
 
         if (!this.lockKeydown && this.word.pinyin_current[0] === event.key) {
             this.lockKeydown = true;
@@ -188,9 +187,12 @@ class SceneGame extends window.Phaser.Scene {
     }
 
     selectWord(words) {
+        //this.sound.play('se_bell');
+
         this.word = words[Math.floor(Math.random() * words.length)];
         this.word.pinyin_current = this.word.pinyin.replace(/\d+/g, '');
-        this.speech();
+        let self = this;
+        setTimeout(() => self.speech(), 100);
     }
 
     // 音声再生
