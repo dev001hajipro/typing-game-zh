@@ -112,6 +112,8 @@ class SceneGame extends window.Phaser.Scene {
 
         this.load.audio('se_button', 'resource/audio/MenuSelectionClick.wav');
 
+        this.load.audio('se_typing', 'resource/audio/9744__horn__typewriter.wav');
+
     }
 
     create() {
@@ -157,10 +159,19 @@ class SceneGame extends window.Phaser.Scene {
         this.input.keyboard.on('keydown', this.onKeydown, this);
 
         this.sound.add('se_button');
+        this.sound.add('se_typing');
+
     }
 
     onKeydown(event) {
         event.preventDefault();
+        if (event.key === "Shift" || event.key === "Control" || event.key === "Alt") {
+        } else {
+            this.sound.play('se_typing');
+        }
+        
+        console.log(event);
+
         if (!this.lockKeydown && this.word.pinyin_current[0] === event.key) {
             this.lockKeydown = true;
             this.word.pinyin_current = this.word.pinyin_current.slice(1);
